@@ -487,6 +487,13 @@
             "name": "Document Type",
             "dataType": "int64",
             "sourceColumn": "Document Type"
+          },
+          {
+            "type": "calculated",
+            "name": "Product Group Code and Description",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "ValueEntry[Product Group Code]&\" - \"&[Product Group Description]"
           }
         ],
         "partitions": [
