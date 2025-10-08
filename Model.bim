@@ -1,0 +1,589 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1500,
+  "model": {
+    "culture": "en-US",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/sql-dtsbi-prod database windows net;sqldb-dwh-prod",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "sql-dtsbi-prod.database.windows.net",
+            "database": "sqldb-dwh-prod"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "OAuth2",
+          "kind": "SQL",
+          "path": "sql-dtsbi-prod.database.windows.net;sqldb-dwh-prod",
+          "Expires": "Tue, 12 Aug 2025 04:43:53 GMT"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "Divisi",
+        "columns": [
+          {
+            "name": "Id",
+            "dataType": "int64",
+            "sourceColumn": "Id"
+          },
+          {
+            "name": "Divisi",
+            "dataType": "string",
+            "sourceColumn": "Divisi"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/sql-dtsbi-prod database windows net;sqldb-dwh-prod\",",
+                "    #\"pbi_INV Divisi\" = Source{[Schema=\"pbi\",Item=\"INV Divisi\"]}[Data]",
+                "in",
+                "    #\"pbi_INV Divisi\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Kalendar",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Tanggal",
+            "dataType": "dateTime",
+            "isNameInferred": false,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Date]"
+          },
+          {
+            "type": "calculated",
+            "name": "Nomor Bulan",
+            "dataType": "int64",
+            "isDataTypeInferred": false,
+            "isHidden": true,
+            "expression": "MONTH('Kalendar'[Tanggal])"
+          },
+          {
+            "type": "calculated",
+            "name": "Bulan",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "FORMAT('Kalendar'[Tanggal],\"mmmm\",\"id\")",
+            "sortByColumn": "Nomor Bulan"
+          },
+          {
+            "type": "calculated",
+            "name": "Nomor Kuartal",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "QUARTER('Kalendar'[Tanggal])"
+          },
+          {
+            "type": "calculated",
+            "name": "Kuartal",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "SWITCH('Kalendar'[Nomor Kuartal],1,\"Q1\",2,\"Q2\",3,\"Q3\",4,\"Q4\")",
+            "sortByColumn": "Nomor Kuartal"
+          },
+          {
+            "type": "calculated",
+            "name": "Tahun",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "expression": "YEAR('Kalendar'[Tanggal])"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculatedTable 1",
+            "source": {
+              "type": "calculated",
+              "expression": "CALENDAR(MIN('ValueEntry'[Posting Date]),MAX('ValueEntry'[Posting Date]))"
+            }
+          }
+        ]
+      },
+      {
+        "name": "sales_ve_sgm",
+        "columns": [
+          {
+            "name": "No_",
+            "dataType": "string",
+            "sourceColumn": "No_"
+          },
+          {
+            "name": "Description",
+            "dataType": "string",
+            "sourceColumn": "Description"
+          },
+          {
+            "name": "Source No_",
+            "dataType": "string",
+            "sourceColumn": "Source No_"
+          },
+          {
+            "name": "Posting Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Posting Date"
+          },
+          {
+            "name": "Invoiced Quantity",
+            "dataType": "double",
+            "sourceColumn": "Invoiced Quantity"
+          },
+          {
+            "name": "Cost Amount (Actual)",
+            "dataType": "double",
+            "sourceColumn": "Cost Amount (Actual)"
+          },
+          {
+            "name": "Unit of Measure Code",
+            "dataType": "string",
+            "sourceColumn": "Unit of Measure Code"
+          },
+          {
+            "name": "Sales Amount (Actual)",
+            "dataType": "double",
+            "sourceColumn": "Sales Amount (Actual)"
+          },
+          {
+            "name": "Eliminasi PCM TIPA",
+            "dataType": "string",
+            "sourceColumn": "Eliminasi PCM TIPA"
+          },
+          {
+            "name": "channel1",
+            "dataType": "string",
+            "sourceColumn": "channel1"
+          },
+          {
+            "name": "channel2",
+            "dataType": "string",
+            "sourceColumn": "channel2"
+          },
+          {
+            "name": "channel3",
+            "dataType": "string",
+            "sourceColumn": "channel3"
+          },
+          {
+            "name": "Global Dimension 1 Code",
+            "dataType": "string",
+            "sourceColumn": "Global Dimension 1 Code"
+          },
+          {
+            "name": "Global Dimension 2 Code",
+            "dataType": "string",
+            "sourceColumn": "Global Dimension 2 Code"
+          },
+          {
+            "name": "Entry Type",
+            "dataType": "int64",
+            "sourceColumn": "Entry Type"
+          },
+          {
+            "name": "pemilikbarang",
+            "dataType": "string",
+            "sourceColumn": "pemilikbarang"
+          },
+          {
+            "name": "Sub Category 1",
+            "dataType": "string",
+            "sourceColumn": "Sub Category 1"
+          },
+          {
+            "name": "Sub Category 2",
+            "dataType": "string",
+            "sourceColumn": "Sub Category 2"
+          },
+          {
+            "name": "Item Category Code",
+            "dataType": "string",
+            "sourceColumn": "Item Category Code"
+          },
+          {
+            "name": "Product Group Code",
+            "dataType": "string",
+            "sourceColumn": "Product Group Code"
+          },
+          {
+            "name": "Item Category Name",
+            "dataType": "string",
+            "sourceColumn": "Item Category Name"
+          },
+          {
+            "name": "Product Group Name",
+            "dataType": "string",
+            "sourceColumn": "Product Group Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/sql-dtsbi-prod database windows net;sqldb-dwh-prod\",",
+                "    fase2_V_FACT_SALES_VE_SGM_TIPA2024 = Source{[Schema=\"fase2\",Item=\"V_FACT_SALES_VE_SGM_TIPA2024\"]}[Data]",
+                "in",
+                "    fase2_V_FACT_SALES_VE_SGM_TIPA2024"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Cost Amount (Actual) sales_ve_gm",
+            "expression": " SUM([Cost Amount (Actual)])",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Total Invoiced Quantity sales_ve_customer",
+            "expression": " SUM([Invoiced Quantity])",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Absolute Total Cost Amount Actual sales_ve_sgm",
+            "expression": " ABS([Total Cost Amount (Actual) sales_ve_gm])",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Total Sales Amount Actual sales_ve_gm",
+            "expression": " SUMX('sales_ve_sgm',IF('sales_ve_sgm'[Entry Type] <> 1, 'sales_ve_sgm'[Sales Amount (Actual)] * -1, 'sales_ve_sgm'[Sales Amount (Actual)]))",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Absolute Total Sales Amount Actual sales_ve_sgm",
+            "expression": " ABS([Total Sales Amount Actual sales_ve_gm])",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Reversed Invoiced Quantity sales_ve_sgm",
+            "expression": " [Total Invoiced Quantity sales_ve_customer]*-1",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Reversed Sales Amount Actual sales_ve_sgm",
+            "expression": " [Total Sales Amount Actual sales_ve_gm]*-1",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Reversed Total Cost Amount (Actual)",
+            "expression": " [Total Cost Amount (Actual) sales_ve_gm]*-1",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Reversed Margin sales_ve_sgm",
+            "expression": " [Reversed Sales Amount Actual sales_ve_sgm]-[Reversed Total Cost Amount (Actual)]",
+            "displayFolder": "_Measure"
+          },
+          {
+            "name": "Reversed Margin %",
+            "expression": " DIVIDE([Reversed Margin sales_ve_sgm], [Reversed Sales Amount Actual sales_ve_sgm], 0) * 100",
+            "displayFolder": "_Measure"
+          }
+        ]
+      },
+      {
+        "name": "ValueEntry",
+        "columns": [
+          {
+            "name": "Entry No_",
+            "dataType": "int64",
+            "sourceColumn": "Entry No_"
+          },
+          {
+            "name": "Item No_",
+            "dataType": "string",
+            "sourceColumn": "Item No_"
+          },
+          {
+            "name": "Posting Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Posting Date"
+          },
+          {
+            "name": "Item Ledger Entry Quantity",
+            "dataType": "double",
+            "sourceColumn": "Item Ledger Entry Quantity"
+          },
+          {
+            "name": "Cost Amount (Actual)",
+            "dataType": "double",
+            "sourceColumn": "Cost Amount (Actual)"
+          },
+          {
+            "name": "Cost Posted to G_L",
+            "dataType": "double",
+            "sourceColumn": "Cost Posted to G_L"
+          },
+          {
+            "name": "Expected Cost Posted to G_L",
+            "dataType": "double",
+            "sourceColumn": "Expected Cost Posted to G_L"
+          },
+          {
+            "name": "Source Type",
+            "dataType": "int64",
+            "sourceColumn": "Source Type"
+          },
+          {
+            "name": "Item Ledger Entry Type",
+            "dataType": "int64",
+            "sourceColumn": "Item Ledger Entry Type"
+          },
+          {
+            "name": "Item Ledger Entry No_",
+            "dataType": "int64",
+            "sourceColumn": "Item Ledger Entry No_"
+          },
+          {
+            "name": "Document No_",
+            "dataType": "string",
+            "sourceColumn": "Document No_"
+          },
+          {
+            "name": "Cost Amount (Expected)",
+            "dataType": "double",
+            "sourceColumn": "Cost Amount (Expected)"
+          },
+          {
+            "name": "Item Name",
+            "dataType": "string",
+            "sourceColumn": "Item Name"
+          },
+          {
+            "name": "Item Category Code",
+            "dataType": "string",
+            "sourceColumn": "Item Category Code"
+          },
+          {
+            "name": "Product Group Code",
+            "dataType": "string",
+            "sourceColumn": "Product Group Code"
+          },
+          {
+            "name": "Product Group Description",
+            "dataType": "string",
+            "sourceColumn": "Product Group Description"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year"
+          },
+          {
+            "name": "company",
+            "dataType": "string",
+            "sourceColumn": "company"
+          },
+          {
+            "name": "Pemilik Barang",
+            "dataType": "string",
+            "sourceColumn": "Pemilik Barang"
+          },
+          {
+            "name": "Source No_",
+            "dataType": "string",
+            "sourceColumn": "Source No_"
+          },
+          {
+            "name": "Valued Quantity",
+            "dataType": "double",
+            "sourceColumn": "Valued Quantity"
+          },
+          {
+            "name": "Invoiced Quantity",
+            "dataType": "double",
+            "sourceColumn": "Invoiced Quantity"
+          },
+          {
+            "name": "Salespers__Purch_ Code",
+            "dataType": "string",
+            "sourceColumn": "Salespers__Purch_ Code"
+          },
+          {
+            "name": "Sales Amount (Actual)",
+            "dataType": "double",
+            "sourceColumn": "Sales Amount (Actual)"
+          },
+          {
+            "name": "Discount Amount",
+            "dataType": "double",
+            "sourceColumn": "Discount Amount"
+          },
+          {
+            "name": "Global Dimension 1 Code",
+            "dataType": "string",
+            "sourceColumn": "Global Dimension 1 Code"
+          },
+          {
+            "name": "Global Dimension 2 Code",
+            "dataType": "string",
+            "sourceColumn": "Global Dimension 2 Code"
+          },
+          {
+            "name": "Cost Amount (Non-Invtbl_)",
+            "dataType": "double",
+            "sourceColumn": "Cost Amount (Non-Invtbl_)"
+          },
+          {
+            "name": "Source Name",
+            "dataType": "string",
+            "sourceColumn": "Source Name"
+          },
+          {
+            "name": "channel1",
+            "dataType": "string",
+            "sourceColumn": "channel1"
+          },
+          {
+            "name": "channel2",
+            "dataType": "string",
+            "sourceColumn": "channel2"
+          },
+          {
+            "name": "channel3",
+            "dataType": "string",
+            "sourceColumn": "channel3"
+          },
+          {
+            "name": "Location Code",
+            "dataType": "string",
+            "sourceColumn": "Location Code"
+          },
+          {
+            "name": "Base Unit of Measure",
+            "dataType": "string",
+            "sourceColumn": "Base Unit of Measure"
+          },
+          {
+            "name": "Expected Cost",
+            "dataType": "int64",
+            "sourceColumn": "Expected Cost"
+          },
+          {
+            "name": "Valuation Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Valuation Date"
+          },
+          {
+            "name": "Document Type",
+            "dataType": "int64",
+            "sourceColumn": "Document Type"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/sql-dtsbi-prod database windows net;sqldb-dwh-prod\",",
+                "    fase2_V_FACT_VALUEENTRY_TIPA2024 = Source{[Schema=\"fase2\",Item=\"V_FACT_VALUEENTRY_TIPA2024\"]}[Data]",
+                "in",
+                "    fase2_V_FACT_VALUEENTRY_TIPA2024"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Cost Posted to GL",
+            "expression": " DIVIDE(SUM(ValueEntry[Cost Posted to G_L]),1000000,0)",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "Total Expected Cost Posted to GL",
+            "expression": " DIVIDE(SUM(ValueEntry[Expected Cost Posted to G_L]),1000000,0)",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "Cost Posted to GL As of",
+            "expression": " CALCULATE([Total Cost Posted to GL],FILTER(ALL('Kalendar'),'Kalendar'[Tanggal]<=MAX('Kalendar'[Tanggal])))",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "Cost Expected Cost Posted to GL As of",
+            "expression": " CALCULATE([Total Expected Cost Posted to GL],FILTER(ALL('Kalendar'),'Kalendar'[Tanggal]<=MAX('Kalendar'[Tanggal])))",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "Persediaan",
+            "expression": " [Cost Posted to GL As of]+[Cost Expected Cost Posted to GL As of]",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "Persediaan KORPORAT",
+            "expression": " CALCULATE([Persediaan],ALL(Divisi))",
+            "displayFolder": "_Measures"
+          },
+          {
+            "name": "_Persediaan",
+            "expression": [
+              " SUMX(Divisi,SWITCH(Divisi[Divisi],",
+              "\"KORPORAT\",[Persediaan KORPORAT],",
+              "[Persediaan]))"
+            ],
+            "displayFolder": "_Measures"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "7e0657bf-9285-4858-9616-b0a79c9b5cf9",
+        "fromTable": "sales_ve_sgm",
+        "fromColumn": "pemilikbarang",
+        "toTable": "Divisi",
+        "toColumn": "Divisi"
+      },
+      {
+        "name": "8684b45d-9b0e-4c21-9ade-9f423ce5ff0c",
+        "fromTable": "sales_ve_sgm",
+        "fromColumn": "Posting Date",
+        "toTable": "Kalendar",
+        "toColumn": "Tanggal"
+      },
+      {
+        "name": "e4578ae7-1963-41f5-b4c6-8e7b3378b272",
+        "fromTable": "ValueEntry",
+        "fromColumn": "Posting Date",
+        "toTable": "Kalendar",
+        "toColumn": "Tanggal"
+      },
+      {
+        "name": "1a3f1e1f-e1fe-48b2-b5d0-619e7e4a34b4",
+        "fromTable": "ValueEntry",
+        "fromColumn": "Pemilik Barang",
+        "toTable": "Divisi",
+        "toColumn": "Divisi"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "600"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
